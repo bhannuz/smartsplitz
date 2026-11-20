@@ -157,8 +157,28 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
 .t-tripname{font-size:12px;font-weight:700;color:var(--sub2);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .t-right{display:flex;gap:6px;align-items:center;}
 
+/* FLOATING ADD BUTTON */
+.fab{
+  position:fixed;right:16px;bottom:calc(18px + var(--safe-bot));z-index:500;
+  display:flex;align-items:center;gap:8px;
+  height:56px;padding:0 22px 0 16px;border:none;border-radius:28px;cursor:pointer;
+  background:linear-gradient(135deg,#c9ff3d 0%,#b8f724 50%,#8fdc10 100%);
+  color:#0a0a10;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;letter-spacing:.2px;
+  box-shadow:0 8px 28px rgba(184,247,36,.38),0 3px 10px rgba(0,0,0,.55);
+  transition:transform .15s ease,box-shadow .15s ease;
+  animation:fabPulse 2.4s ease-out 1s 3;
+}
+.fab:active{transform:scale(.94);}
+.fab-plus{font-size:30px;line-height:1;font-weight:700;margin-top:-3px;}
+@keyframes fabPulse{0%{box-shadow:0 8px 28px rgba(184,247,36,.38),0 0 0 0 rgba(184,247,36,.55);}100%{box-shadow:0 8px 28px rgba(184,247,36,.38),0 0 0 22px rgba(184,247,36,0);}}
+.how{display:flex;flex-direction:column;gap:10px;text-align:left;margin:14px auto 4px;max-width:320px;}
+.how-s{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--txt);line-height:1.4;}
+.how-n{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;}
+.how-s small{display:block;color:var(--sub2);font-size:11.5px;margin-top:1px;}
+.hint-line{font-size:11.5px;color:var(--sub2);margin:-2px 0 8px;line-height:1.4;}
+
 /* MAIN SCROLL AREA */
-.main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px;padding-bottom:calc(14px + var(--safe-bot));scrollbar-width:none;}
+.main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px;padding-bottom:calc(100px + var(--safe-bot));scrollbar-width:none;}
 .main::-webkit-scrollbar{display:none;}
 
 /* TRIP HEADER — compact */
@@ -646,7 +666,6 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
     </div>
     <div class="t-right">
       <button class="btn bg bsm" onclick="openMem()" aria-label="Members">👥</button>
-      <button class="btn bl bsm" onclick="openAdd()">＋ Add</button>
     </div>
   </nav>
 
@@ -681,7 +700,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
 
     <!-- PER PERSON INLINE ROW -->
     <div class="per-row">
-      <span class="per-label">Per person · equal split</span>
+      <span class="per-label">Each person's share (if split equally)</span>
       <span class="per-val" id="sv-per">₹0</span>
     </div>
 
@@ -691,7 +710,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
         <span class="tb-icon">💸</span>Expenses
       </button>
       <button class="tb" onclick="switchTab('t-people',this)">
-        <span class="tb-icon">👥</span>People
+        <span class="tb-icon">👥</span>People &amp; Settle
       </button>
     </div>
 
@@ -793,6 +812,9 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
     </div>
 
   </div><!-- /main -->
+
+  <!-- FLOATING ADD EXPENSE BUTTON -->
+  <button class="fab" onclick="openAdd()" aria-label="Add expense"><span class="fab-plus">+</span>Add Expense</button>
 </div><!-- /app -->
 
 <!-- ══ ADD/EDIT EXPENSE MODAL ══ -->
@@ -800,10 +822,10 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
   <div class="mbox">
     <div class="mtitle" id="m-exp-title">💸 Add Expense</div>
     <input type="hidden" id="eid">
-    <div class="fl"><label>Description</label><input type="text" id="e-name" class="fi" placeholder="e.g. Hotel dinner"></div>
+    <div class="fl"><label>What was it for?</label><input type="text" id="e-name" class="fi" placeholder="e.g. Hotel dinner"></div>
     <div class="g2">
       <div class="fl"><label>Amount (₹)</label><input type="number" id="e-amt" class="fi" placeholder="0" min="1" inputmode="numeric" oninput="onAmtChg()"></div>
-      <div class="fl"><label>Paid By</label><select id="e-paid" class="fi"></select></div>
+      <div class="fl"><label>Who paid?</label><select id="e-paid" class="fi"></select></div>
     </div>
     <div class="g2">
       <div class="fl"><label>Category</label>
@@ -816,18 +838,19 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
     <div class="fl"><label>Notes (optional)</label><input type="text" id="e-notes" class="fi" placeholder="Any note"></div>
     <div class="fl">
       <label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-        <span style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:1.4px">Split Between</span>
+        <span style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:1.4px">Split between (who shared it?)</span>
         <span style="font-size:11px;cursor:pointer;color:#b8a8ff;font-weight:700" onclick="selAll()">Select All</span>
       </label>
       <div class="mck-list" id="split-list"></div>
     </div>
     <div class="fl">
-      <label style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:7px;display:block">Split Type</label>
+      <label style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:7px;display:block">How to split?</label>
       <div class="sptog">
-        <button class="spopt on" id="sp-eq" onclick="setSplit('equal')">⚖️ Equal</button>
-        <button class="spopt" id="sp-cu" onclick="setSplit('custom')">✏️ Custom</button>
-        <button class="spopt" id="sp-pc" onclick="setSplit('percent')">% Share</button>
+        <button class="spopt on" id="sp-eq" onclick="setSplit('equal')">⚖️ Equally</button>
+        <button class="spopt" id="sp-cu" onclick="setSplit('custom')">✏️ By Amount</button>
+        <button class="spopt" id="sp-pc" onclick="setSplit('percent')">% By Percent</button>
       </div>
+      <div class="hint-line">Equally = everyone pays the same share. Choose the other options if shares differ.</div>
       <div id="custom-area" class="hidden"></div>
     </div>
     <div class="dvd"></div>
@@ -1588,7 +1611,14 @@ function renderExpList(exps,total){
   if(!list.length){
     const hint = olderCount > 0
       ? `<p>No expenses in this range.</p><p style="margin-top:6px;font-size:12px;color:var(--sub2)">${olderCount} older expense${olderCount!==1?'s':''} — tap <b style="color:#b8a8ff">All</b> or <b style="color:#b8a8ff">📅 Custom</b> to see them.</p>`
-      : '<p>No expenses found</p>';
+      : (!exps.length
+        ? `<p style="font-weight:700;color:var(--txt);font-size:15px">Welcome! Here's how SmartSplit works</p>
+           <div class="how">
+             <div class="how-s"><span class="how-n">1</span><div>Add your friends<small>Tap 👥 at the top to add everyone on the trip</small></div></div>
+             <div class="how-s"><span class="how-n">2</span><div>Add each expense<small>Tap the green <b>+ Add Expense</b> button and say who paid</small></div></div>
+             <div class="how-s"><span class="how-n">3</span><div>Settle up<small>Open <b>People &amp; Settle</b> to see who owes whom</small></div></div>
+           </div>`
+        : '<p>No expenses found</p>');
     el.innerHTML=`<div class="empty"><div class="ei-ico">💸</div>${hint}</div>`;
     return;
   }
