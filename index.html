@@ -177,6 +177,23 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
 .how-s small{display:block;color:var(--sub2);font-size:11.5px;margin-top:1px;}
 .hint-line{font-size:11.5px;color:var(--sub2);margin:-2px 0 8px;line-height:1.4;}
 
+/* v2 FEATURES */
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{flex:1;min-width:74px;padding:9px 6px;border-radius:10px;border:1px solid var(--rim);background:var(--ink3);color:var(--txt);font:700 12px 'Plus Jakarta Sans',sans-serif;cursor:pointer;}
+.pill:active{background:var(--ink4);}
+.bar{height:9px;border-radius:5px;background:linear-gradient(90deg,var(--violet),var(--lime));}
+.brow{margin:9px 0;font-size:12px;}.brow>div:first-child{display:flex;justify-content:space-between;margin-bottom:4px;}
+.hrow{padding:9px 0;border-bottom:1px solid var(--rim);font-size:12.5px;line-height:1.4;}.hrow small{color:var(--sub2);display:block;}
+.itrow{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;align-items:center;}
+.chip{padding:4px 9px;border-radius:12px;border:1px solid var(--rim);font-size:11px;font-weight:700;color:var(--sub2);cursor:pointer;}
+.chip.on{background:var(--violet);color:#fff;border-color:var(--violet);}
+/* v3 SIMPLE VIEW */
+.sumbox.c .stats2 .sc:first-child,.sumbox.c .per-row{display:none;}
+.sumbox.c .stats2{grid-template-columns:1fr;}
+.lnk{background:none;border:none;color:#b8a8ff;font:700 12px 'Plus Jakarta Sans',sans-serif;cursor:pointer;padding:2px 0 10px;display:block;margin:0 auto;}
+.fc .fhide{display:none !important;}
+.ei{cursor:pointer;}.ei .xd{display:none;}.ei.open .xd{display:block;}
+.mrow{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin-bottom:8px;border-radius:12px;border:1px solid var(--rim);background:var(--ink3);color:var(--txt);font:700 14px 'Plus Jakarta Sans',sans-serif;cursor:pointer;text-align:left;}
 /* MAIN SCROLL AREA */
 .main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px;padding-bottom:calc(100px + var(--safe-bot));scrollbar-width:none;}
 .main::-webkit-scrollbar{display:none;}
@@ -678,11 +695,11 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
         <div style="font-size:11px;color:var(--sub2);margin-top:3px" id="pg-meta"></div>
       </div>
       <div class="trip-hd-right">
-        <button class="btn bg bsm" onclick="openBudgetEdit()" title="Settings">⚙️</button>
-        <button class="btn bv bsm" onclick="exportCSV()" title="Export">⬇️</button>
+        <button class="btn bv bsm" onclick="openMore()" title="More">⋯ More</button>
       </div>
     </div>
 
+    <div class="sumbox c" id="sumbox">
     <!-- 2 WIDE STAT CARDS -->
     <div class="stats2">
       <div class="sc" style="--sc-ac:var(--lime)">
@@ -704,6 +721,9 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
       <span class="per-val" id="sv-per">₹0</span>
     </div>
 
+    </div>
+    <button class="lnk" id="sumtg" onclick="var b=document.getElementById('sumbox');b.classList.toggle('c');this.textContent=b.classList.contains('c')?'Show details ▾':'Hide details ▴'">Show details ▾</button>
+
     <!-- TABS -->
     <div class="tabrow">
       <button class="tb on" onclick="switchTab('t-exp',this)">
@@ -716,10 +736,11 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
 
     <!-- ══ EXPENSES TAB ══ -->
     <div id="t-exp" class="sec">
-      <div class="pnl">
+      <div class="pnl fc">
         <div class="ph" style="flex-wrap:wrap;gap:6px">
           <span class="pt">All Expenses</span>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn bg bsm" onclick="this.closest('.pnl').classList.toggle('fc')">🔍 Filter</button>
+          <div class="fhide" style="display:flex;gap:6px;flex-wrap:wrap;width:100%">
             <select id="fcat" class="fsel" onchange="renderUI()">
               <option value="">All Categories</option>
               <option>🍔 Food</option><option>✈️ Transport</option><option>🏨 Stay</option>
@@ -730,7 +751,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
             </select>
           </div>
         </div>
-        <div class="tbar">
+        <div class="tbar fhide">
           <input type="search" id="esearch" class="si" placeholder="🔍 Search…" oninput="renderUI()">
           <select id="fsort" class="fsel" onchange="renderUI()">
             <option value="date-d">Newest</option>
@@ -740,7 +761,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
           </select>
         </div>
         <!-- DATE RANGE FILTER -->
-        <div style="padding:0 14px 10px;display:flex;flex-direction:column;gap:8px">
+        <div class="fhide" style="padding:0 14px 10px;display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;gap:6px;flex-wrap:wrap" id="dchips">
             <button class="dchip on" data-range="5d" onclick="setDRange(this,'5d')">Last 5 days</button>
             <button class="dchip" data-range="7d" onclick="setDRange(this,'7d')">7 days</button>
@@ -758,7 +779,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
         </div>
         <div class="pb" id="exp-list"></div>
       </div>
-      <div class="two">
+      <div class="two" style="display:none">
         <div class="pnl">
           <div class="ph"><span class="pt">By Category</span></div>
           <div class="pb" id="cat-list"></div>
@@ -824,7 +845,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
     <input type="hidden" id="eid">
     <div class="fl"><label>What was it for?</label><input type="text" id="e-name" class="fi" placeholder="e.g. Hotel dinner"></div>
     <div class="g2">
-      <div class="fl"><label>Amount (₹)</label><input type="number" id="e-amt" class="fi" placeholder="0" min="1" inputmode="numeric" oninput="onAmtChg()"></div>
+      <div class="fl"><label>Amount</label><div style="display:flex;gap:6px"><select id="e-cur" class="fi" style="width:96px;padding-left:8px;padding-right:22px" onchange="curChg()"><option>INR</option><option>USD</option><option>EUR</option><option>GBP</option><option>AED</option><option>THB</option><option>SGD</option><option>MYR</option><option>JPY</option><option>AUD</option></select><input type="number" id="e-amt" class="fi" placeholder="0" min="1" inputmode="decimal" oninput="onAmtChg();curChg(1)"></div><div id="e-fxh" class="hint-line" style="margin:4px 0 0"></div></div>
       <div class="fl"><label>Who paid?</label><select id="e-paid" class="fi"></select></div>
     </div>
     <div class="g2">
@@ -835,6 +856,8 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
         </select></div>
       <div class="fl"><label>Date</label><input type="date" id="e-date" class="fi"></div>
     </div>
+    <button class="lnk" style="padding:6px 0 10px;margin:0" onclick="var m=document.getElementById('e-more');m.style.display=m.style.display==='none'?'block':'none'">＋ More options (notes, items, receipt)</button>
+    <div id="e-more" style="display:none">
     <div class="fl"><label>Notes (optional)</label><input type="text" id="e-notes" class="fi" placeholder="Any note"></div>
     <div class="fl">
       <label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
@@ -853,6 +876,11 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
       <div class="hint-line">Equally = everyone pays the same share. Choose the other options if shares differ.</div>
       <div id="custom-area" class="hidden"></div>
     </div>
+    <div class="fl"><label>🧾 Item-wise split (optional)</label>
+      <div class="hint-line">Add items and tap who had each one. This replaces the amount above.</div>
+      <div id="it-list"></div><button class="btn bg bsm" onclick="addItem()">+ Add item</button></div>
+    <div class="fl"><label>📎 Receipt photo (optional)</label><input type="file" id="e-photo" accept="image/*" class="fi" style="padding:8px"><div id="e-photo-h" class="hint-line"></div></div>
+    </div>
     <div class="dvd"></div>
     <div style="display:flex;gap:8px">
       <button class="btn bl" style="flex:1" id="btn-save">Save</button>
@@ -860,6 +888,9 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
     </div>
   </div>
 </div>
+
+<div class="modal" id="m-gen"><div class="mbox"><div class="mtitle" id="mg-t"></div><div id="mg-b"></div>
+  <div class="dvd"></div><button class="btn bg w100" onclick="closeM('m-gen')">Close</button></div></div>
 
 <!-- ══ MEMBER MODAL ══ -->
 <div class="modal" id="m-mem">
@@ -1358,6 +1389,7 @@ function resetForm(){
   $('m-exp-title').textContent='💸 Add Expense'; $('btn-save').textContent='Save';
   fillPaidBy(''); S.splitType='equal'; S.sel=[...ns()];
   renderSplitList(); setSplit('equal');
+  $('e-more').style.display='none'; $('e-cur').value='INR'; $('e-fxh').textContent=''; $('it-list').innerHTML=''; $('e-photo').value=''; window._fx=1;
 }
 function fillPaidBy(sel){
   $('e-paid').innerHTML=ns().map(n=>`<option ${n===sel?'selected':''}>${n}</option>`).join('');
@@ -1409,7 +1441,8 @@ function renderCustomArea(){
 /* SAVE EXPENSE */
 $('btn-save').onclick = async () => {
   const editId=$('eid').value;
-  const name=$('e-name').value.trim(), amt=parseFloat($('e-amt').value);
+  const name=$('e-name').value.trim(); const cur=$('e-cur').value, fx=cur==='INR'?1:(+window._fx||0); let amt=parseFloat($('e-amt').value)*fx; if(cur!=='INR'&&!fx) return toast('Exchange rate not loaded'); if(cur!=='INR') amt=+amt.toFixed(2);
+  const itm=itemSplit(); if(itm) amt=itm.amt;
   const cat=$('e-cat').value, paidBy=$('e-paid').value;
   const date=$('e-date').value||today(), notes=$('e-notes').value.trim();
   if(!name)        return toast('Add a description');
@@ -1431,10 +1464,17 @@ $('btn-save').onclick = async () => {
     if(Math.abs(tot-100)>0.5) return toast(`Percentages = ${Math.round(tot)}%, need 100%`);
   }
 
-  const data={ name, amount:amt, category:cat, paidBy, date, notes, splits, splitType:S.splitType, splitBetween:S.sel, groupId:S.gid };
+  let sel2=S.sel; if(itm){ splits=itm.splits; sel2=itm.sel; }
+  const data={ name, amount:amt, category:cat, paidBy, date, notes, splits, splitType:itm?'items':S.splitType, splitBetween:sel2, groupId:S.gid };
+  if(cur!=='INR'){ data.cur=cur; data.fx=fx; data.orig=+(amt/fx).toFixed(2); } else if(editId){ data.cur=null; data.fx=null; data.orig=null; }
+  if(itm) data.items=itm.items; else if(editId) data.items=null;
+  const old=editId?S.expenses[editId]:null;
   showLoad();
   try {
-    editId ? await update(ref(db,`smartsplit/expenses/${editId}`),data) : await set(push(ref(db,'smartsplit/expenses')),data);
+    let id=editId;
+    if(editId) await update(ref(db,`smartsplit/expenses/${editId}`),data); else { const nr=push(ref(db,'smartsplit/expenses')); id=nr.key; await set(nr,data); }
+    const ph=await readPhoto(); if(ph){ await set(ref(db,'smartsplit/photos/'+id),ph); await update(ref(db,`smartsplit/expenses/${id}`),{hasPhoto:true}); }
+    logAct(editId?'edited':'added',name,amt,old);
     toast(editId?'Updated ✓':'Added ✓'); closeM('m-exp'); await loadAll(); renderUI();
   } catch(e){ toast('Error: '+e.message); }
   finally { hideLoad(); }
@@ -1447,14 +1487,93 @@ window.editExp = async id => {
   resetForm(); $('eid').value=id; $('e-name').value=e.name; $('e-amt').value=e.amount;
   $('e-cat').value=e.category; $('e-date').value=e.date||today(); $('e-notes').value=e.notes||'';
   fillPaidBy(e.paidBy); S.sel=e.splitBetween||[...ns()]; renderSplitList();
-  setSplit(e.splitType||'equal'); $('m-exp-title').textContent='✏️ Edit Expense'; $('btn-save').textContent='Update';
+  if(e.cur){ $('e-cur').value=e.cur; window._fx=e.fx; $('e-amt').value=e.orig; curChg(1); }
+  if(e.items) e.items.forEach(i=>addItem(i));
+  if(e.notes||e.items) $('e-more').style.display='block';
+  setSplit(e.splitType==='items'?'equal':(e.splitType||'equal')); $('m-exp-title').textContent='✏️ Edit Expense'; $('btn-save').textContent='Update';
   $('m-exp').classList.add('on');
 };
 window.delExp = async id => {
   if(!confirm('Delete?')) return;
-  showLoad(); await remove(ref(db,`smartsplit/expenses/${id}`));
+  showLoad(); const o=S.expenses[id]; await remove(ref(db,`smartsplit/expenses/${id}`)); remove(ref(db,'smartsplit/photos/'+id)).catch(()=>{}); if(o) logAct('deleted',o.name,o.amount);
   await loadAll(); renderUI(); hideLoad(); toast('Deleted');
 };
+
+
+/* ══ v2: CURRENCY, ITEMS, PHOTO, HISTORY, CHARTS, SHARE, REPORT ══ */
+const FXC={};
+window.curChg = async (quiet) => {
+  const c=$('e-cur').value, h=$('e-fxh'); if(c==='INR'){ window._fx=1; h.textContent=''; return; }
+  try{
+    if(!FXC.t){ const r=await (await fetch('https://open.er-api.com/v6/latest/INR')).json(); FXC.r=r.rates; FXC.t=1; }
+    if(!quiet||!window._fx||window._fxc!==c){ window._fx=1/FXC.r[c]; window._fxc=c; }
+    const a=parseFloat($('e-amt').value)||0;
+    h.textContent=`1 ${c} = ₹${(+window._fx).toFixed(2)}`+(a?`  →  ${fmt(a*window._fx)}`:'')+' (custom shares: enter in ₹)';
+  }catch(e){ h.textContent='Could not load rate (offline?)'; window._fx=0; }
+};
+window.addItem = (it) => {
+  const d=document.createElement('div'); d.className='itrow'; d.dataset.who=JSON.stringify(it?.who||ns());
+  d.innerHTML=`<input class="fi" style="flex:2;margin:0;min-width:90px" placeholder="Item" value="${it?it.name:''}"><input class="fi" type="number" inputmode="decimal" style="flex:1;margin:0;min-width:70px" placeholder="₹" value="${it?it.price:''}"><span style="cursor:pointer;color:var(--rose)" onclick="this.parentNode.remove()">✕</span><div style="width:100%;display:flex;gap:5px;flex-wrap:wrap"></div>`;
+  $('it-list').appendChild(d); chips(d);
+};
+function chips(d){
+  const who=JSON.parse(d.dataset.who), box=d.lastChild;
+  box.innerHTML=ns().map(n=>`<span class="chip ${who.includes(n)?'on':''}">${n}</span>`).join('');
+  box.onclick=e=>{ const n=e.target.textContent; if(!e.target.classList.contains('chip')) return; const i=who.indexOf(n); i<0?who.push(n):who.splice(i,1); d.dataset.who=JSON.stringify(who); chips(d); };
+}
+function itemSplit(){
+  const rows=[...document.querySelectorAll('#it-list .itrow')]; const items=[], splits={}; let amt=0;
+  rows.forEach(r=>{ const [a,b]=r.querySelectorAll('input'); const p=parseFloat(b.value)||0, who=JSON.parse(r.dataset.who); if(!p||!who.length) return;
+    items.push({name:a.value.trim()||'Item',price:p,who}); amt+=p;
+    who.forEach(n=>{ const k=n.replace(/\s/g,'_'); splits[k]=splits[k]||{name:n,share:0}; splits[k].share=+(splits[k].share+p/who.length).toFixed(2); }); });
+  return items.length?{amt,items,splits,sel:Object.values(splits).map(x=>x.name)}:null;
+}
+function readPhoto(){ return new Promise(res=>{ const f=$('e-photo').files[0]; if(!f) return res(null);
+  const im=new Image(); im.onload=()=>{ const k=Math.min(1,800/Math.max(im.width,im.height)), c=document.createElement('canvas'); c.width=im.width*k; c.height=im.height*k;
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',.6)); }; im.onerror=()=>res(null); im.src=URL.createObjectURL(f); }); }
+window.viewPhoto = async id => { showLoad(); try{ const v=(await get(ref(db,'smartsplit/photos/'+id))).val();
+  gen('📎 Receipt', v?`<img src="${v}" style="width:100%;border-radius:10px">`:'<p>Photo not found</p>'); }finally{ hideLoad(); } };
+
+function gen(t,h){ $('mg-t').textContent=t; $('mg-b').innerHTML=h; $('m-gen').classList.add('on'); }
+function logAct(act,name,amt,old){ try{ push(ref(db,`smartsplit/log/${S.gid}`),{t:Date.now(),act,name,amt:Math.round(amt),old:old?{name:old.name,amt:Math.round(old.amount)}:null}); }catch(e){} }
+window.openHistory = async () => { showLoad(); try{
+  const v=(await get(ref(db,`smartsplit/log/${S.gid}`))).val()||{}; const L=Object.values(v).sort((a,b)=>b.t-a.t).slice(0,80);
+  gen('🕘 History', L.length?L.map(l=>{ const ic={added:'➕',edited:'✏️',deleted:'🗑️'}[l.act]||'•';
+    const ch=l.old&&(l.old.amt!==l.amt||l.old.name!==l.name)?`<small>was ${l.old.name} · ${fmt(l.old.amt)}</small>`:'';
+    return `<div class="hrow">${ic} <b>${l.name}</b> ${l.act} · ${fmt(l.amt)}${ch}<small>${new Date(l.t).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}</small></div>`; }).join(''):'<p style="color:var(--sub2)">No changes recorded yet. New adds, edits and deletes will show here.</p>'); }finally{ hideLoad(); } };
+
+window.openCharts = () => {
+  const E=Object.values(S.expenses); if(!E.length) return toast('No expenses yet');
+  const grp=(f,v=e=>e.amount)=>{ const m={}; E.forEach(e=>{ const k=f(e); m[k]=(m[k]||0)+v(e); }); return Object.entries(m); };
+  const bars=(rows)=>{ const mx=Math.max(...rows.map(r=>r[1]))||1; return rows.map(([k,v])=>`<div class="brow"><div><span>${k}</span><b>${fmt(v)}</b></div><div class="bar" style="width:${Math.max(3,v/mx*100)}%"></div></div>`).join(''); };
+  const tot=E.reduce((s,e)=>s+e.amount,0);
+  const cat=grp(e=>e.category||'📦 Other').sort((a,b)=>b[1]-a[1]).map(([k,v])=>[`${k} · ${Math.round(v/tot*100)}%`,v]);
+  const day=grp(e=>e.date||'?').sort((a,b)=>a[0].localeCompare(b[0])).slice(-10).map(([k,v])=>[fmtDate(k),v]);
+  const paid=grp(e=>e.paidBy||'?').sort((a,b)=>b[1]-a[1]);
+  const sh={}; E.forEach(e=>Object.values(e.splits||{}).forEach(x=>sh[x.name]=(sh[x.name]||0)+x.share)); 
+  const h=t=>`<div style="font-weight:800;margin:14px 0 4px">${t}</div>`;
+  gen('📊 Charts', h('By category')+bars(cat)+h('Daily spend (last 10 days)')+bars(day)+h('Who paid')+bars(paid)+h("Each person's share")+bars(Object.entries(sh).sort((a,b)=>b[1]-a[1])));
+};
+
+function summary(){
+  const E=Object.values(S.expenses), tot=E.reduce((s,e)=>s+e.amount,0), T=calcSettle();
+  return `*${S.group.name||'Trip'} – SmartSplit*\nTotal: ${fmt(tot)} · ${E.length} expenses\n\n*Who pays whom*\n`+(T.length?T.map(t=>`• ${t.from} → ${t.to}: ${fmt(t.amount)}`).join('\n'):'All settled 🎉');
+}
+window.shareWA = () => window.open('https://wa.me/?text='+encodeURIComponent(summary()),'_blank');
+
+window.openReport = () => gen('📄 Report', `<button class="btn bl w100" onclick="repXlsx()">📊 Download Excel</button><button class="btn bv w100 mt8" onclick="repPdf()">🖨️ PDF (Print / Save as PDF)</button><button class="btn bg w100 mt8" onclick="exportCSV()">⬇️ CSV</button>`);
+function repData(){ const E=Object.values(S.expenses).sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const ex=E.map(e=>({Date:fmtDate(e.date),Item:e.name,Category:e.category,'Amount ₹':e.amount,Original:e.cur?`${e.orig} ${e.cur}`:'','Paid By':e.paidBy,'Split Between':(e.splitBetween||[]).join(', '),Notes:e.notes||''}));
+  const bal=calcBal(); return {ex,bl:Object.entries(bal).map(([n,v])=>({Member:n,'Net ₹':Math.round(v),Status:v>0.5?'gets back':v<-0.5?'owes':'settled'})),st:calcSettle().map(t=>({From:t.from,To:t.to,'Amount ₹':Math.round(t.amount)}))}; }
+window.repXlsx = async () => { showLoad('Preparing…'); try{
+  if(!window.XLSX) await new Promise((r,j)=>{ const s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'; s.onload=r; s.onerror=j; document.head.appendChild(s); });
+  const d=repData(), wb=XLSX.utils.book_new(); [['Expenses',d.ex],['Balances',d.bl],['Settle Up',d.st]].forEach(([n,r])=>XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r),n));
+  XLSX.writeFile(wb,`${(S.group.name||'Trip').replace(/\s/g,'_')}_report.xlsx`); toast('Excel ready 📊'); }catch(e){ toast('Excel failed (offline?)'); } finally{ hideLoad(); } };
+window.repPdf = () => { const d=repData(), tb=r=>r.length?`<table><tr>${Object.keys(r[0]).map(k=>`<th>${k}</th>`).join('')}</tr>${r.map(x=>`<tr>${Object.values(x).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</table>`:'<p>None</p>';
+  const w=window.open('','_blank'); if(!w) return toast('Allow pop-ups to print');
+  w.document.write(`<html><head><title>${S.group.name||'Trip'} report</title><style>body{font-family:Arial;padding:20px}table{border-collapse:collapse;width:100%;margin-bottom:18px;font-size:12px}th,td{border:1px solid #bbb;padding:5px;text-align:left}th{background:#eee}</style></head><body><h2>${S.group.name||'Trip'} – SmartSplit Report</h2><h3>Expenses</h3>${tb(d.ex)}<h3>Balances</h3>${tb(d.bl)}<h3>Settle Up</h3>${tb(d.st)}</body></html>`); w.document.close(); w.focus(); setTimeout(()=>w.print(),400); };
+
+window.openMore = () => gen('More', [['📊 Charts','openCharts()'],['🕘 History','openHistory()'],['💬 Share on WhatsApp','shareWA()'],['📄 Report (Excel / PDF / CSV)','openReport()'],['⚙️ Trip settings & budget','openBudgetEdit()']].map(([t,f])=>`<button class="mrow" onclick="closeM('m-gen');${f}">${t}</button>`).join(''));
 
 /* DEPOSITS */
 window.openDeposit = () => {
@@ -1655,23 +1774,26 @@ function renderExpList(exps,total){
     const rows = items.map(e => {
       const id  = Object.keys(S.expenses).find(k=>S.expenses[k]===e)||'';
       const perP= e.splitBetween?.length ? fmt(e.amount/e.splitBetween.length)+'/person' : '';
-      return `<div class="ei" style="padding-left:14px;padding-right:14px">
+      return `<div class="ei" style="padding-left:14px;padding-right:14px" onclick="this.classList.toggle('open')">
         <div class="eico">${e.category?.split(' ')[0]||'📦'}</div>
         <div style="flex:1;min-width:0">
           <div class="en" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.name}</div>
           <div class="em">
             ${e.category?.split(' ')[1]||''}
-            · <strong style="color:var(--txt)">${e.paidBy||'?'}</strong>
-            ${perP?`· <span style="color:#b8a8ff">${perP}</span>`:''}
+            · <strong style="color:var(--txt)">${e.paidBy||'?'}</strong> paid
           </div>
-          ${e.notes?`<div class="em" style="font-style:italic;opacity:.7">${e.notes}</div>`:''}
+          <div class="xd">
+            ${perP?`<div class="em" style="color:#b8a8ff">${perP}</div>`:''}
+            ${e.notes?`<div class="em" style="font-style:italic;opacity:.7">${e.notes}</div>`:''}
+            ${e.items?`<div class="em">${e.items.map(i=>i.name+' '+fmt(i.price)).join(' · ')}</div>`:''}
+          </div>
         </div>
         <div style="flex-shrink:0;text-align:right;min-width:60px">
-          <div class="ea">${fmt(e.amount)}</div>
+          <div class="ea">${fmt(e.amount)}</div><div class="xd">${e.cur?`<div class="em">${e.orig} ${e.cur}</div>`:''}${e.hasPhoto?`<div class="em" style="cursor:pointer" onclick="event.stopPropagation();viewPhoto('${id}')">📎 receipt</div>`:''}
           <div class="ebtns">
-            <button class="btn bg bxs" onclick="editExp('${id}')">✏️</button>
-            <button class="btn bg bxs" style="color:var(--rose)" onclick="delExp('${id}')">🗑️</button>
-          </div>
+            <button class="btn bg bxs" onclick="event.stopPropagation();editExp('${id}')">✏️</button>
+            <button class="btn bg bxs" style="color:var(--rose)" onclick="event.stopPropagation();delExp('${id}')">🗑️</button>
+          </div></div>
         </div>
       </div>`;
     }).join('');
